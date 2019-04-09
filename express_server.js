@@ -2,20 +2,27 @@ var express = require("express");
 var app = express();
 var PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
+
+//must before all the routes
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+//create a random string as a special key to store the url from input 
+//store into the urlDatabase
+//to urls.show and show website information
 app.post("/urls", (req, res) => {
   let newKey = generateRandomString()
-  urlDatabase[key] = req.body.longURL;
-  res.redirect(`/urls/${key}`);      
+  urlDatabase[newKey] = req.body.longURL;
+  res.redirect(`/urls/${newKey}`);      
 });
 
+//http://localhost:8080/urls
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
+//http://localhost:8080/urls/new
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
@@ -23,6 +30,10 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  res.redirect(urlDatabase[req.params.shortURL]);
 });
 
 var urlDatabase = {
@@ -43,6 +54,7 @@ app.get("/urls.json", (req, res) => {
 app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
   });
+
 
 function generateRandomString() {
   var text = "";
