@@ -6,8 +6,9 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let newKey = generateRandomString()
+  urlDatabase[key] = req.body.longURL;
+  res.redirect(`/urls/${key}`);      
 });
 
 app.get("/urls", (req, res) => {
@@ -43,12 +44,13 @@ app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
   });
 
-  function generateRandomString() {
-    var text = "";
+function generateRandomString() {
+  var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for (var i = 0; i < 6; i++)
+  for (var i = 0; i < 6; i++) {
     text += possible.charAt(Math.floor(Math.random() * 6));
-
-  return text;
   }
+  return text;
+}
+
