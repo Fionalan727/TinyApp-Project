@@ -14,9 +14,14 @@
     <h3>My URL</h3>
     <ul>
         <% for(key in urls) { %>
-            <li> <%= key %> : <%= urls[key] %> </li>
+            <li> <%= key %> : <%= urls[key] %>
+                <form method="POST" action="/urls/<%=key%>/delete">
+                    <button>delete</button>
+                </form>
+            </li>
             <a href="#"></a>
         <% } %>
+        
     </ul>
 </body>
 </html>

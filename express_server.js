@@ -32,6 +32,17 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+//delete the urls 
+//redirect /urls
+app.post("/urls/:shortURL/delete",(req, res) => {
+
+  delete urlDatabase[req.params.shortURL]
+  res.redirect("/urls")
+})
+
+
+//redirect to the actual page
+//"/u/" is just a made up path so it doesn't conflict to the url
 app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL]);
 });
