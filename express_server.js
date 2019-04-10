@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.post("/urls", (req, res) => {
   let newKey = generateRandomString()
   urlDatabase[newKey] = req.body.longURL;
-  res.redirect(`/urls/${newKey}`);      
+  res.redirect(`/urls`);      
 });
 
 //http://localhost:8080/urls
@@ -40,6 +40,12 @@ app.post("/urls/:shortURL/delete",(req, res) => {
   res.redirect("/urls")
 })
 
+//edit the url to add new long URL
+//update the longurl to database and match with the original url
+app.post("/urls/:shortURL/edit", (req,res) => {
+  urlDatabase[req.params.shortURL] = req.body.longURL
+  res.redirect("/urls")
+})
 
 //redirect to the actual page
 //"/u/" is just a made up path so it doesn't conflict to the url
