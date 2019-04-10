@@ -50,7 +50,10 @@ app.post("/urls/:shortURL/edit", (req,res) => {
 //redirect to the actual page
 //"/u/" is just a made up path so it doesn't conflict to the url
 app.get("/u/:shortURL", (req, res) => {
-  res.redirect(urlDatabase[req.params.shortURL]);
+  let longURL = urlDatabase[req.params.shortURL];
+  longURL
+  ? res.redirect(longURL) 
+  : res.send(`${req.params.shortURL} is not a valid short URL`);
 });
 
 var urlDatabase = {
