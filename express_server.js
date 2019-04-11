@@ -30,7 +30,7 @@ app.get("/urls", (req, res) => {
 //http://localhost:8080/urls/new
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"]
+    username: req.cookie["username"]
   };
   res.render("urls_new",templateVars);
 });
@@ -39,6 +39,34 @@ app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { username: req.cookies["username"],shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
+
+app.get("/register",(req, res) =>{
+  let templateVars = {user_id: req.cookies["user_id"]}
+  res.render("registration_page",templateVars)
+})
+
+app.post("/register",(req, res) => {
+  const emailInput = req.body.email
+  const passwordInput = req.body.password
+  const newKey = generateRandomString()
+  users[newKey] = {}
+
+
+  if(!emailInput || !passwordInput){
+    res.status(400)
+    res.send("please fill in the email/password")
+  }else if(emailChecker(emailInput)){
+    res.status(400)
+    res.send("This email adress already exists")
+  } else{
+    users[newKey]["id"] = newKey
+    users[newKey]["email"] = emailInput
+    users[newKey]["password"] = passwordInput
+  }
+  res.cookie("user_id", newKey)
+  res.redirect("/urls")
+})
+
 
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username)
@@ -75,8 +103,21 @@ app.get("/u/:shortURL", (req, res) => {
   : res.send(`${req.params.shortURL} is not a valid short URL`);
 });
 
+//store and access the users in the app
+const users = {
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
 
-
+//object used to store unique short url and long url
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -97,6 +138,15 @@ app.get("/hello", (req, res) => {
   });
 
 
+function emailChecker (email){
+  for (id in users) {
+    if (email === users[id].email){
+      return true
+    } 
+  }
+  return false;
+}
+//generate an random and unique 6 digit alphanumeric string
 function generateRandomString() {
   var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
