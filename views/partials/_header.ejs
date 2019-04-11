@@ -4,16 +4,16 @@
     
 </header>
 
-<% if(username){ %>
+<% if(user_id){ %>
     <form action="/logout" method="POST">
-        <h1>You have successfully logged in, <%=username%>!</h1>
+        <h1>You have successfully logged in, <%=user_id%>!</h1>
         <button>log Out</button>
     </form>
   <% } else{ %>  
     <form action="/login" method="POST">
         <h3>Login</h3>
-        <input name ="username" type="text">
-        <%=username%>
+        <input name ="user_id" type="text">
+        
         <button>Submit</button>
     </form>
  <% } %>

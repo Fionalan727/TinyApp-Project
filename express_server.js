@@ -23,20 +23,20 @@ app.post("/urls", (req, res) => {
 
 //http://localhost:8080/urls
 app.get("/urls", (req, res) => {
-  let templateVars = {username: req.cookies["username"], urls: urlDatabase };
+  let templateVars = {user_id: req.cookies["user_id"], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
 //http://localhost:8080/urls/new
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookie["username"]
+    user_id: req.cookies["user_id"]
   };
   res.render("urls_new",templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { username: req.cookies["username"],shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  let templateVars = { user_id: req.cookies["user_id"],shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
 
@@ -63,18 +63,17 @@ app.post("/register",(req, res) => {
     users[newKey]["email"] = emailInput
     users[newKey]["password"] = passwordInput
   }
-  res.cookie("user_id", newKey)
+  res.cookie("user_id", users[newKey][id])
   res.redirect("/urls")
 })
 
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username)
   res.redirect("/urls")
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username")
+  res.clearCookie("user_id")
   res.redirect("/urls")
 })
 
