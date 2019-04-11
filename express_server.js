@@ -40,6 +40,11 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.get("/login", (req,res) =>{
+  let templateVars = { user_id: req.cookies["user_id"],shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  res.render("url_login",templateVars)
+})
+
 app.get("/register",(req, res) =>{
   let templateVars = {user_id: req.cookies["user_id"]}
   res.render("registration_page",templateVars)
