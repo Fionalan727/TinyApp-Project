@@ -32,18 +32,31 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+
 //http://localhost:8080/urls/new
 app.get("/urls/new", (req, res) => {
-  let templateVars = {
-    user_id: req.cookies["user_id"]
-  };
-  res.render("urls_new",templateVars);
+ 
+  if(req.cookies["user_id"]){
+    let templateVars = {
+      user_id: req.cookies["user_id"],
+      email: (users[req.cookies["user_id"]] ? users[req.cookies["user_id"]].email : users[req.cookies["user_id"]])
+
+    };
+    res.render("urls_new",templateVars);
+  } else{
+    res.redirect("/urls")
+  }
+  
+
+  
+  
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { user_id: req.cookies["user_id"],
   shortURL: req.params.shortURL, 
-  longURL: urlDatabase[req.params.shortURL] 
+  longURL: urlDatabase[req.params.shortURL],
+  email: (users[req.cookies["user_id"]] ? users[req.cookies["user_id"]].email : users[req.cookies["user_id"]])
 };
   res.render("urls_show", templateVars);
 });
@@ -52,15 +65,21 @@ app.get("/login", (req,res) =>{
   let templateVars = { 
     user_id: req.cookies["user_id"],
     shortURL: req.params.shortURL, 
-    longURL: urlDatabase[req.params.shortURL]
+    longURL: urlDatabase[req.params.shortURL],
+    email: (users[req.cookies["user_id"]] ? users[req.cookies["user_id"]].email : users[req.cookies["user_id"]])
   };
   res.render("url_login",templateVars)
 })
 
 app.get("/register",(req, res) =>{
-  let templateVars = {user_id: req.cookies["user_id"]}
+  let templateVars = {
+    user_id: req.cookies["user_id"],
+    email: (users[req.cookies["user_id"]] ? users[req.cookies["user_id"]].email : users[req.cookies["user_id"]])
+  }
   res.render("registration_page",templateVars)
 })
+
+
 
 app.post("/register",(req, res) => {
   const emailInput = req.body.email
@@ -96,7 +115,7 @@ app.post("/login", (req, res) => {
     res.status(403)
     res.send("password does not match,try again")
   }else{
-  res.cookie("user_id", user["id"])
+  res.cookie("user_id", users["id"])
     res.redirect('/urls');
 
   }
@@ -146,6 +165,7 @@ const users = {
   }
 }
 
+console.log(users)
 //object used to store unique short url and long url
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
