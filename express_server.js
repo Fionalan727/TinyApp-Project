@@ -23,7 +23,12 @@ app.post("/urls", (req, res) => {
 
 //http://localhost:8080/urls
 app.get("/urls", (req, res) => {
-  let templateVars = {user_id: req.cookies["user_id"], urls: urlDatabase };
+  let templateVars = {
+    user_id: req.cookies["user_id"],
+    urls: urlDatabase,
+    email: (users[req.cookies["user_id"]] ? users[req.cookies["user_id"]].email : users[req.cookies["user_id"]])
+  };
+
   res.render("urls_index", templateVars);
 });
 
@@ -36,12 +41,19 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { user_id: req.cookies["user_id"],shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  let templateVars = { user_id: req.cookies["user_id"],
+  shortURL: req.params.shortURL, 
+  longURL: urlDatabase[req.params.shortURL] 
+};
   res.render("urls_show", templateVars);
 });
 
 app.get("/login", (req,res) =>{
-  let templateVars = { user_id: req.cookies["user_id"],shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  let templateVars = { 
+    user_id: req.cookies["user_id"],
+    shortURL: req.params.shortURL, 
+    longURL: urlDatabase[req.params.shortURL]
+  };
   res.render("url_login",templateVars)
 })
 
@@ -68,13 +80,26 @@ app.post("/register",(req, res) => {
     users[newKey]["email"] = emailInput
     users[newKey]["password"] = passwordInput
   }
-  res.cookie("user_id", users[newKey][id])
+  res.cookie("user_id", users[newKey]["id"])
+  console.log(users)
   res.redirect("/urls")
 })
 
 
 app.post("/login", (req, res) => {
-  res.redirect("/urls")
+  console.log(users)
+  user = emailChecker(req.body.email)
+  if(!user) {
+    res.status(403)
+    res.send("email does not exists! DNE!")
+  }else if(req.body.password !== user.password) {
+    res.status(403)
+    res.send("password does not match,try again")
+  }else{
+  res.cookie("user_id", user["id"])
+    res.redirect('/urls');
+
+  }
 })
 
 app.post("/logout", (req, res) => {
@@ -145,7 +170,7 @@ app.get("/hello", (req, res) => {
 function emailChecker (email){
   for (id in users) {
     if (email === users[id].email){
-      return true
+      return users[id]
     } 
   }
   return false;
