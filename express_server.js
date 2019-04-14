@@ -188,7 +188,7 @@ app.post("/login", (req, res) => {
   }else if(!bcrypt.compareSync(req.body.password, user.password)) {
     res.status(403)
     res.send("password does not match,try again")
-  }else{f
+  }else{
     req.session.user_id = user["id"];
     res.redirect('/urls');
 

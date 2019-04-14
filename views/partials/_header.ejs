@@ -1,14 +1,12 @@
 <header>
-    <h1>Tiny App</h1>
-
-    
+    <h1 style="color:aqua;">Tiny App</h1>
 </header>
 
 <% if(user_id){ %>
     <form action="/logout" method="POST">
-        <h4><a href="/urls">URLs</a></h4>
-        <h4><a href="/urls/new">Create New TinyURL</a></h4>
-        <h1>You have successfully logged in, <%=email%>!</h1>
+        <h4><a href="/urls">URLs</a> | <a href="/urls/new">Create New TinyURL</a></h4>
+        
+        <h3>You have successfully logged in, <%=email%>!</h3>
         <button>log Out</button>
     </form>
   <% } else{ %>  
