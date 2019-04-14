@@ -1,5 +1,6 @@
 var express = require("express");
 var app = express();
+const bcrypt = require('bcrypt');
 
 var cookieParser = require('cookie-parser')
 
@@ -132,21 +133,22 @@ app.post("/register",(req, res) => {
   } else{
     users[newUserID]["id"] = newUserID
     users[newUserID]["email"] = emailInput
-    users[newUserID]["password"] = passwordInput
-
-    console.log("register a user", users)
-    res.cookie("user_id", newUserID)
-    res.redirect("/urls")
+    users[newUserID]["password"] = hasher(passwordInput); 
+    console.log("users", users);
+    console.log("register a user", users);
+    res.cookie("user_id", newUserID);
+    res.redirect("/urls");
   }
 })
 
 
 app.post("/login", (req, res) => {
-  user = emailChecker(req.body.email)
+  const user = emailChecker(req.body.email)
+  console.log("user is", user);
   if(!user) {
     res.status(403)
     res.send("email does not exists! DNE!")
-  }else if(req.body.password !== user.password) {
+  }else if(!bcrypt.compareSync(req.body.password, user.password)) {
     res.status(403)
     res.send("password does not match,try again")
   }else{
@@ -239,4 +241,8 @@ function urlsForUser(id){
     }
   }
   return result;
+}
+function hasher(password) {
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  return hashedPassword;
 }

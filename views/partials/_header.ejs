@@ -1,11 +1,13 @@
 <header>
     <h1>Tiny App</h1>
-    <p><a href="/urls/new">Create New TinyURL</a></p>
+
     
 </header>
 
 <% if(user_id){ %>
     <form action="/logout" method="POST">
+        <h4><a href="/urls">URLs</a></h4>
+        <h4><a href="/urls/new">Create New TinyURL</a></h4>
         <h1>You have successfully logged in, <%=email%>!</h1>
         <button>log Out</button>
     </form>
